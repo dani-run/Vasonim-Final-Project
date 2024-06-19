@@ -35,7 +35,7 @@ export const action = async ({request}: ClientActionFunctionArgs) => {
     console.log(name, password, ' logged');
     return redirect('/', {
         headers: {
-            'Set-Cookie': await commitSession(session)
+            'Set-Cookie': await commitSession(session),
         }
     });
 }
@@ -59,7 +59,6 @@ export default function Login(){
                 {actionData ? <>{actionData.error }<br /></> : null }
                 <button type='submit' >Log in</button>
             </Form>
-            <Link to='/startup' >Back</Link>
             <br />
             <Link to='/signup' >Dont't have an account? Create one!</Link>
         </>

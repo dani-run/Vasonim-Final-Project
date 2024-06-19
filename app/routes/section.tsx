@@ -5,8 +5,6 @@ export default function Sections(){
     return (<>
     <main >
         <br />
-        <Link to="/" >Back</Link>
-        <br />
         <Link to="/sections/urgent" >Urgent Cases</Link>
         <br />
         <Link to="/sections/general" >General Questions</Link>

@@ -82,8 +82,6 @@ export default function NewPostRoute(){
         setTitle("");
     }
     return (<>
-        <Link to="/" >Back</Link>
-        <br />
         <h3>Create a new post</h3>
         <Form method="post" onSubmit={handleSubmit} >
             <label>
