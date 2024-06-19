@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid()) @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  username      String   @unique //introduce userul, se verifica daca e unique
+  passwordHash  String   //introduce userul, o cripteaza bcrypt
+  posts         Post[]   //creeaza userul
+  email         String   @unique//introduce userul
+  comments      Comment[] //nu merge fara asta aici, mortii lui
+  likedPosts    Post[]   @relation("UserLikedPosts")
+  dislikedPosts Post[]   @relation("UserDislikedPosts")
+  likedComments Comment[] @relation("UserLikedComments")
+  dislikedComments Comment[] @relation("UserDislikedComments")
+}
+
+model Link{
+  id         String   @id @default(uuid()) @unique
+  onPost     Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId     String?  
+  content    String   //introduce userul
+  onComment  Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId  String?  
+}
+
+model Post {
+  id         String   @id @default(uuid()) @unique
+  userId     String?  
+  postedBy   User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  title      String   //introduce userul
+  content    String   //introduce userul
+  reason     String?  //pt urgent cases
+  links      Link[]   //pt informational resources
+  section    String   //selecteaza userul, introduce aplicatia
+  comments   Comment[] 
+  likes      User[]    @relation("UserLikedPosts") //seteaza cei care au cont
+  dislikes   User[]    @relation("UserDislikedPosts")   //seteaza cei care au cont
+  hasPinned  Boolean   @default(false)   //id de la pinnedCom, nu mai pun relations ca ia foc
+  edited     Boolean   @default(false)
+}
+
+model Comment{
+  id         String    @id @default(uuid()) @unique
+  postedBy   User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  onPost     Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  postId     String
+  userId     String?
+  content    String    //seteaza autorul comentariului
+  pinned     Boolean   @default(false)//seteaza autorul postarii
+  parentId   String? 
+  links      Link[]
+  parent     Comment?  @relation("CommentToComment", fields: [parentId], references: [id], onDelete:SetNull )
+  replies    Comment[] @relation("CommentToComment") // replies
+  likes      User[]    @relation("UserLikedComments") // Users who liked the comment
+  dislikes   User[]    @relation("UserDislikedComments") // Users who disliked the comment
+  edited     Boolean   @default(false)
+}
