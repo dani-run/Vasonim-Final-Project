@@ -44,6 +44,7 @@ export default function HomeScreen(){
   <Outlet />
   <ScrollRestoration />
   <div className="homeScreen" >
+  <h1 className="text-3xl font-bold underline">Test</h1>
     {data.posts.map((post)=>{
       const format=formatPost(post);
       const postId=post.id;
@@ -56,6 +57,7 @@ export default function HomeScreen(){
               <button><Link to={"post/"+postId} >More details</Link></button>
             </div>)
     })}
+    
   </div>
   </>
   );

@@ -8,7 +8,9 @@ dns.setDefaultResultOrder('verbatim');
 installGlobals();
 
 export default defineConfig({
-  plugins: [remix(), tsconfigPaths()],
+  plugins: [remix(), 
+    tsconfigPaths(),
+  ],
   server: {
     port: 5173,
     proxy: {

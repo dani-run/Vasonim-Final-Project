@@ -7,7 +7,6 @@ import { formatPost } from "~/components/functions";
 import { createReply, deleteCom, getSession, fuckedLoader } from "~/utils/session.server"; //trebuie pt userId
 import { useState } from "react";
 import fetch from "node-fetch";
-import { link } from "node:fs";
 
 export const loader= async ({params, request}: LoaderFunctionArgs) => {
     const session = await getSession(  //trebuie pt userId

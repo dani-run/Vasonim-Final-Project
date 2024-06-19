@@ -55,7 +55,7 @@ export function Comment({comment, user, full, limit, postAuthorId}: any){
         {canDelete && <Form method="post" >
             <input type="hidden" name="commentId" value={comment.id} />
             <button type="submit" name="option" value="delete" >Delete</button>
-            { (comment.pinned || !(comment.onPost.hasPinned) ) && <button type="submit" name="option" onClick={() => setPinned(!comment.pinned) } value={!comment.pinned ? "pin" : "unpin"} >{!comment.pinned ? "Pin as BEST answer" : "Unpin"}</button>}
+            { ((user.id===postAuthorId) &&((comment.pinned || !(comment.onPost.hasPinned) ))) && <button type="submit" name="option" onClick={() => setPinned(!comment.pinned) } value={!comment.pinned ? "pin" : "unpin"} >{!comment.pinned ? "Pin as BEST answer" : "Unpin"}</button>}
         </Form>
 
         }
