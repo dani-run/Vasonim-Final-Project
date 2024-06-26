@@ -216,7 +216,7 @@ export default function PostRoute(){
     }
     return(
         <div className="fullComs">
-            <Link to={"/post/" + data.post.id }>Back</Link>
+            <Link to={"/post/" + data.post.id }>{"Back to post page"}</Link>
             <br />
             {data.coms.length ? <>{data.coms.length} comment{data.coms.length >1 && "s"}<br /></> : null }
             <Form method="post" onSubmit={() => handleSubmit()} >

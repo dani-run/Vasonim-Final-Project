@@ -139,7 +139,14 @@ export const action = async ({request} : ClientActionFunctionArgs) => {
         if(!ok){
           return json({error:"Incorrect password" }, {status: 404});
         }
-        return json({email: user.email}); 
+        return json({email: user.email});
+      case "delete":
+        await db.user.delete({
+          where:{ 
+            id:userId
+          }
+        });
+        return redirect('/');
         default:
           throw new Error("Unknown option");
     }
@@ -157,6 +164,7 @@ export default function Account(){
   const [oldMail, setOldMail]=useState("");
   const [showMail, setShowMail]=useState(false);
   const [password, setPassword]=useState("");
+  const [del, setDel]=useState(false);
   function longPass(pass: string ){
     if(pass){
       return (pass.length>=6);
@@ -264,6 +272,11 @@ export default function Account(){
         >
           Change</button> : <p>Change</p> }
             </details>
+          <button type="button" onClick={()=> setDel(!del) } >{!del ? "Delete account" : "Cancel" }</button>
+          {del && <div className="pl-10">
+            <p>Are you sure you want to permanently delete your account?</p>
+            <button type="submit" name="option" value="delete" >Delete</button>
+          </div>}
       </Form>
       
       </div>

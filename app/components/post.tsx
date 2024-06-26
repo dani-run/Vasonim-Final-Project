@@ -4,8 +4,9 @@ import { formatPost } from "./functions";
 
 export function Post({ post ,user, full }: any){
 const [link,setLink]=useState("");
-const [links,setLinks]=useState(post.links?.map((l: any) => l.content ) || [] );
+const [links,setLinks]=useState(post.links?.map((l: any) => l.content ) || []);
 const [edit,setEdit]=useState(false);
+const [delPost, setDelPost ]=useState(false);
 const content=post.content;
 const [postContent, setPostContent]=useState(content);
 const format=formatPost(post);
@@ -16,25 +17,30 @@ const likes=post.likes;
 const dislikes=post.dislikes
 const canEdit= user?.id===post.postedBy?.id;
     return(
-        <div className="post">
-            <br />
-            <br />
-            <div className="post-info">
-                    Posted by {author} on {date}
-                    {post.edited ? <p className="edited" >Edited on {format.edited}</p>: null}
-                    <h4>{title}</h4>
+        <div >
+            <div className="pl-1" >
+            <div className="font-bold flex-1 ">
+                Posted by {author} on {date}
             </div>
-            <div className="post-content" >
+            {full && <div className="edited" >
+                {post.edited ? <p className="edited" >Edited on {format.edited}</p>: null} 
+            </div>}
+            </div>
+            <div className="post" >
+                <h4>{title}</h4>
                 {post.reason && <h5>Urgent because:<br /> {post.reason}</h5>}
                 {post.section === "informational" &&  <p>Links:
                 <ul>
-                    {post.links?.map((link: any) => <li key={link.id} >
+                    {post.links?.map((link: any) => {
+                        const [del, setDel]=useState(false);
+                        return <li key={link.id} >
                         <a href={link.content} target="_blank" >{link.content}</a>
                         { canEdit && <Form method="post" >
                             <input type="hidden" name="linkId" value={link.id} />
-                            <button type="submit" name="option" value="deleteLink" >Delete</button>
+                            <button type="button" name="option" onClick={() => setDel(!del) } >{!del ? "Delete": "Cancel" }</button>
+                            {del && <><p>Are you sure you want to delete this link?</p><button type="submit" name="option" value="deleteLink" ></button></>}
                         </Form>}
-                        </li> )}
+                        </li>} )}
                 </ul>
                 </p>}
                 <br />
@@ -49,14 +55,15 @@ const canEdit= user?.id===post.postedBy?.id;
         </button>)}
                 {(full && canEdit ) && <div className="delete" >
                     <Form method="post" >
-                        <button type="submit" name="option" value="deletePost" >Delete post</button>
+                    <button type="button" name="option" onClick={() => setDelPost(!delPost) } >{!delPost ? "Delete post": "Cancel" }</button>
+                    {delPost && <><p>Are you sure you want to delete this post?</p><button type="submit" name="option" value="deletePost" >Delete post</button></>}
                     </Form>
                 </div>}
-            {edit && <Form method="post" onSubmit={() => setLinks("")} >
+            {edit && <Form method="post" onSubmit={() => setLinks(post.links?.map((l: any) => l.content ))} >
                 <textarea name="content" 
                 value={postContent} 
                 onInput={(e: any) => setPostContent(e.currentTarget.value) } />
-                { (postContent != content || links != post.links?.map((l: any) => l.content ) ) && <button type="submit" name="option" value="editPost" >Edit post</button>}
+                { (postContent != content || links != post.links?.map((l: any) => l.content )) && <button type="submit" name="option" value="editPost" >Edit post</button>}
                 {post.section === "informational" &&
                 <div className="links">
                 <label> Do you want to share more resources?<br />
@@ -85,21 +92,22 @@ const canEdit= user?.id===post.postedBy?.id;
             }
                 </div>
                 
-            </div>
+            
             <div className="reactions">
                 Likes: {likes.length}
                 <br />
                 Dislikes: {dislikes.length}
                 { full && <Form method="post" >
                     { !(likes.some((like :any ) => like.id===user?.id )) ? 
-                    <button type="submit" value="likePost" name="option" >Like</button> 
+                    <button type="submit" value="likePost" name="option" className="like" >Like</button> 
                     :
-                    <button type="submit" value="unlikePost" name="option" >Unlike</button>}
+                    <button type="submit" value="unlikePost" name="option" className="liked" >Unlike</button>}
                     { !(dislikes.some((dislike :any ) => dislike.id===user?.id )) ? 
-                    <button type="submit" value="dislikePost" name="option" >Dislike</button> 
+                    <button type="submit" value="dislikePost" name="option" className="dislike" >Dislike</button> 
                     :
-                    <button type="submit" value="undislikePost" name="option" >Remove dislike</button>}
+                    <button type="submit" value="undislikePost" name="option" className="disliked" >Remove dislike</button>}
                 </Form>}   
+            </div>
             </div>
         </div>
     )

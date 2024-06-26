@@ -62,7 +62,7 @@ function shortPass(){
         <br />
         <label>
             Email:
-            <input type="text" value={email} name='email' required onInput={e=>{
+            <input type="email" value={email} name='email' required onInput={e=>{
                 setEmail(e.currentTarget.value);
                 }} />
         </label>

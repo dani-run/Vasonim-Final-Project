@@ -6,22 +6,24 @@ import {
   ClientLoaderFunctionArgs,
   json,
 } from "@remix-run/react";
-import {getSession } from "~/utils/session.server";
+import {fuckedLoader, getSession } from "~/utils/session.server";
 import { db } from "~/utils/db.server";
 import { Post } from "~/components/post";
+import { Comment } from "~/components/comment";
 import { formatPost } from "~/components/functions";
 // import "../styles/home.css";
 
 
 export const loader= async ({request} : ClientLoaderFunctionArgs) => {
   const posts= await db.post.findMany({
-    orderBy: { createdAt: "desc" },
     take: 10,
     include: {
       postedBy: true,
-      comments: true,
       likes: true,
       dislikes: true,
+      comments: {
+        include: fuckedLoader(5),
+      } 
     }
   });
   // console.log(posts); //il probez asa, dar imi umple terminalul
@@ -43,19 +45,34 @@ export default function HomeScreen(){
     <>
   <Outlet />
   <ScrollRestoration />
-  <div className="homeScreen" >
-  <h1 className="text-3xl font-bold underline">Test</h1>
+  <p className="text-3xl" >Recent posts you might be interested in:</p>
+  <div className="pl-2" >
     {data.posts.map((post)=>{
-      const format=formatPost(post);
+      const comment=post.comments[Math.floor(Math.random() * post.comments?.length)];
       const postId=post.id;
-      return (<div  key={post.id} className="multiPost" >
+      return (<>
+      <div  key={post.id} className="flex items-start space-x-4" >
               <Post 
               post={post}
               user={data.user}
               full={false}
               />
-              <button><Link to={"post/"+postId} >More details</Link></button>
-            </div>)
+              <div>
+                { comment &&
+                <div className="mt-6" > 
+                  <Link to={`/coms/${post.id}`} >
+                    <Comment id={comment.id} full={false} comment={comment} user={data.user} />
+                  </Link>
+                  
+                </div>}
+              <div className={!comment ? "mt-6" : "" } >
+                <Link to={"post/"+postId} ><button type="button" className="hover:bg-yellow-400 w-24 h-12 rounded-xl " >More details</button></Link>
+              </div>
+              </div>
+              
+            </div>
+            <br />
+            </>)
     })}
     
   </div>

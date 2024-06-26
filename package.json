@@ -9,7 +9,8 @@
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "remix-serve ./build/server/index.js",
     "typecheck": "tsc",
-    "seed": "cd prisma && node seed.js"
+    "seed": "cd prisma && node seed.js",
+    "css": "tailwindcss -i app/styles/input.css -o app/styles/output.css --watch"
   },
   "dependencies": {
     "@prisma/client": "^5.14.0",
@@ -23,6 +24,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "source-map-support": "^0.5.21",
+    "tailwindcss-important": "^1.0.0",
     "tsx": "^4.11.0"
   },
   "devDependencies": {

@@ -43,7 +43,7 @@ export const action = async ({request}: ClientActionFunctionArgs) => {
 export default function Login(){
     const actionData=useActionData<typeof action>();
     return(
-        <>
+        <div className="" >
         <p>Welcome Back!</p>
             <Form method="post" >
                 <label>
@@ -61,6 +61,6 @@ export default function Login(){
             </Form>
             <br />
             <Link to='/signup' >Dont't have an account? Create one!</Link>
-        </>
+        </div >
     )
 }

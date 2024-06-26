@@ -48,12 +48,13 @@ export default function App() {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="/app/styles/output.css" />
+        <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
         <Meta />
         <Links />
       </head>
       <body>
         { isExcluded ? (<Outlet />) : ( 
-          <Layout user={data.user} >
+          <Layout user={data.user} location={location.pathname} >
             <Outlet />
           </Layout>
           ) }

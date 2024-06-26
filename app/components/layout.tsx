@@ -1,10 +1,10 @@
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLocation } from "@remix-run/react";
 
-export function Layout({ user, children }: { user: any, children: React.ReactNode }) {
+export function Layout({ location ,user, children }: { location: any ;user: any, children: React.ReactNode }) {
     return (
-      <div>
-        <header>
-          <nav className="sidebar" >
+      <div className="mr-20" >
+        <header className="mr-20">
+          <nav className="mr-20" >
       <Link to="https://www.vasonim.com" target="_blank" >Vasonim</Link>
       <br />
       { user?.id ? //afiseaza [object Object] daca selectez sesiunea
@@ -18,17 +18,17 @@ export function Layout({ user, children }: { user: any, children: React.ReactNod
           <br />
           </>)
       }
-      <Link to='/' >Home</Link>
+      <Link to='/' className={location==='/' ? 'text-orange-400 hover:text-orange-400 ' : '' } >Home</Link>
       <br />
-      <Link to="/section" >Sections</Link>
+      <Link to="/section" className={location==='/section' ? 'text-orange-400 hover:text-orange-400 ' : '' } >Sections</Link>
       <br />
-      <Link to="/search" >Search posts</Link>
+      <Link to="/search" className={location==='/search' ? 'text-orange-400 hover:text-orange-400 ' : '' } >Search posts</Link>
       <br />
-      <Link to="/new" >Add a post</Link>
+      <Link to="/new" className={location==='/new' ? 'text-orange-400 hover:text-orange-400 ' : '' } >Add a post</Link>
       <br/>
       </nav>
         </header>
-        <main>{children}</main>
+        <main className="pl-20" >{children}</main>
         <footer>
           {/* Footer content */}
         </footer>

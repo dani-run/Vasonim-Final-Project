@@ -93,7 +93,8 @@ export default function NewPostRoute(){
             Section:<br />
                 <label> 
                     <input type="radio" name="section" value="urgent" 
-                    onClick={() => setSection("urgent") } required />
+                    onClick={() => setSection("urgent") } required 
+                    className="" />
                     Urgent Question
                 </label>
                 <br />

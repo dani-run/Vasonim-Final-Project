@@ -1,4 +1,4 @@
-import { Form } from "@remix-run/react";
+import { Form, Link } from "@remix-run/react";
 import { formatPost } from "./functions";
 import { useState } from "react";
 
@@ -22,20 +22,22 @@ export function Comment({comment, user, full, limit, postAuthorId}: any){
     const [edit, setEdit]=useState(false);
     const [reply, setReply]=useState(false);
     const [pinned, setPinned]=useState(false);
-    const handleSubmit = (e: any) => {
+    const [delCom, setDelCom]=useState(false);
+    const handleSubmit = () => {
         setCom("");
         setEdit(false);
         setReply(false);
     };
     const format=formatPost(comment);
     return (<div className={!comment.pinned ? "reply"  : "pinned"} >
-
         {format.author && (<div className="comment" >
-            By {format.author} on {format.realDate} 
+            <div className="text-bold">
+                By {format.author} on {format.realDate} 
+            </div>
             <p>{content}</p>
+
             Likes: {comment.likes.length}{" "}
             Dislikes: {comment.dislikes.length}
-            {comment.edited && <p className="edited" >Edited</p> }
         </div>
     )}
         
@@ -54,7 +56,8 @@ export function Comment({comment, user, full, limit, postAuthorId}: any){
         
         {canDelete && <Form method="post" >
             <input type="hidden" name="commentId" value={comment.id} />
-            <button type="submit" name="option" value="delete" >Delete</button>
+            <button type="button" name="option" onClick={() => setDelCom(!delCom) } >{!delCom ? "Delete comment": "Cancel" }</button>
+                    {delCom && <><p>Are you sure you want to delete this comment?</p><button type="submit" name="option" value="delete" >Delete comment</button></>}
             { ((user.id===postAuthorId) &&((comment.pinned || !(comment.onPost.hasPinned) ))) && <button type="submit" name="option" onClick={() => setPinned(!comment.pinned) } value={!comment.pinned ? "pin" : "unpin"} >{!comment.pinned ? "Pin as BEST answer" : "Unpin"}</button>}
         </Form>
 
@@ -70,13 +73,13 @@ export function Comment({comment, user, full, limit, postAuthorId}: any){
                 <Form method="post" >
                     <input type="hidden" name="commentId" value={comment.id} />
                     { !(comment.likes.some((like :any ) => like.id===user.id )) ? 
-                    <button type="submit" value="like" name="option" >Like</button> 
+                    <button type="submit" value="like" name="option" className="like" >Like</button> 
                     :
-                    <button type="submit" value="unlike" name="option" >Unlike</button>}
+                    <button type="submit" value="unlike" name="option" className="liked" >Unlike</button>}
                     { !(comment.dislikes.some((dislike :any ) => dislike.id===user.id )) ? 
-                    <button type="submit" value="dislike" name="option" >Dislike</button> 
+                    <button type="submit" value="dislike" name="option" className="dislike" >Dislike</button> 
                     :
-                    <button type="submit" value="undislike" name="option" >Remove dislike</button>}
+                    <button type="submit" value="undislike" name="option" className="disliked" >Remove dislike</button>}
                 </Form>
         </div>
         <br />
@@ -101,13 +104,16 @@ export function Comment({comment, user, full, limit, postAuthorId}: any){
         : //aici se schimba, modific de 2 ori, i aint writin another function
         <ul>
             {replies?.map((reply :any )=>{
-            return (
+              return full ? (
             <li key={reply.id} >
                 <Comment limit={limit-1} postAuthorId={postAuthorId} user={user} full={full} comment={reply} />
-            </li>)
+            </li>) : (<Link to={`/coms/${reply.onPost.id}`} > 
+                <li key={reply.id} >
+                    <Comment limit={limit-1} postAuthorId={postAuthorId} user={user} full={full} comment={reply} />
+                </li>
+            </Link>)
         })}
          </ul> }
-         
         <br />
         </div>
     );
