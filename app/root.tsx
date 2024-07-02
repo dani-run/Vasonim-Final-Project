@@ -1,10 +1,7 @@
 import {
-  Links,
-  Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  MetaFunction,
   ClientLoaderFunctionArgs,
   json,
   useLoaderData,
@@ -13,28 +10,21 @@ import {
 import { getSession } from "./utils/session.server";
 import { db } from "./utils/db.server";
 import { Layout } from "./components/layout";
+import {config} from "@fortawesome/fontawesome-svg-core";
+config.autoAddCss= false;
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "Vasonim Forum" },
-    { name: "description", content: "Welcome to Vasonim's Forum!" },
-  ];
-};
 
 export const loader = async ({request} : ClientLoaderFunctionArgs ) => {
   const session=await getSession (
       request.headers.get("Cookie")
-  )
+  );
   const userId=session.get("userId");
-  if(!userId){
-    return json({user: null});
-  }
-  const user=await db.user.findUnique({
+  const user=userId ? await db.user.findUnique({
       where:{
           id: userId,
       }
-  });
-  return json({user})
+  }) : null ;
+  return json({user});
 }
 
 export default function App() {
@@ -47,10 +37,12 @@ export default function App() {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Vasonim Forum</title>
+        <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-svg-core/styles.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" />
         <link rel="stylesheet" href="/app/styles/output.css" />
-        <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
-        <Meta />
-        <Links />
+        <script src="https://kit.fontawesome.com/1832baa3d3.js" crossOrigin="anonymous"></script>
       </head>
       <body>
         { isExcluded ? (<Outlet />) : ( 

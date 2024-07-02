@@ -3,19 +3,27 @@
 @tailwind utilities;
 
 body{
-    @apply overflow-x-hidden w-screen 
+    @apply overflow-x-hidden w-screen
+}
+
+button :focus{
+    @apply ring-gray-600 ring-opacity-50
 }
 
 nav a{
-    @apply block py-2 px-4 text-white hover:text-yellow-400 rounded w-20 text-xs align-middle justify-center
+    @apply flex py-2 text-white hover:text-yellow-400 rounded w-20 text-xs align-middle justify-center my-4
 }
 
 nav{
-    @apply flex-col fixed top-0 left-0 w-20 h-screen shadow-lg bg-gray-800 mr-20
+    @apply flex-col flex fixed top-0 left-0 w-20 h-screen shadow-lg bg-gray-800 
+}
+
+.nav{
+    @apply flex-col flex top-0 left-0 w-20 h-screen shadow-lg justify-center items-center align-middle
 }
 
 .post{
-    @apply shadow-md bg-gray-100 flex-1 pb-20 border-gray-200 border-2 mb-20 ml-5 rounded-xl w-96 h-96
+    @apply shadow-lg bg-gray-100 flex-1 pb-20 border-gray-200 border-2 mb-20 mx-5 rounded-xl w-192 min-h-144 overflow-auto transition-all duration-300
 }
 
 textarea{
@@ -23,7 +31,7 @@ textarea{
 }
 
 button{
-    @apply bg-gray-100 border-2 border-gray-200 rounded-lg flex-1
+    @apply bg-gray-100 border-2 border-gray-200 rounded-lg flex-1 shadow-sm hover:bg-gray-200 focus:ring-gray-600 focus:ring-opacity-50
 }
 
 .vasonim{
@@ -32,4 +40,73 @@ button{
 
 input{
     @apply bg-gray-100 rounded-md border-gray-200 border-2
+}
+
+.like {
+    @apply !border-0 mx-10 text-gray-800 hover:text-black cancel !shadow-none
+}
+
+.liked{
+    @apply text-yellow-300 hover:text-yellow-400 !border-0 mx-10 cancel !shadow-none
+}
+
+.cancel:hover{
+    background-color: inherit !important;
+    color: inherit !important;
+    @apply !border-0 !shadow-none
+}
+
+.color-none{
+    color: inherit !important;
+}
+
+.dislike{
+    @apply !border-0 mx-10 text-gray-800 shadow-none cancel hover:text-black
+}
+
+.disliked {
+    @apply !border-0 text-red-500 hover:text-red-600 mx-10 shadow-none cancel
+}
+
+.pinned   {
+    @apply text-blue-500 hover:text-blue-600 shadow-none cancel !border-0 
+}
+
+.pin{
+    @apply cancel shadow-none !border-0 bg-inherit
+}
+
+details {
+    @apply bg-gray-200 w-128 flex-col flex my-4 rounded-lg mx-2 items-baseline align-baseline
+}
+
+summary{
+    @apply cursor-pointer 
+}
+
+.fade-in {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.fade-in.show {
+  opacity: 1;
+}
+
+.radio{
+    @apply appearance-none mr-2 h-4 w-4 rounded-full transition duration-150 ease-in-out shrink-0 mt-1 focus:outline-none
+}
+
+.transition-height {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out;
+}
+
+.transition-height-active {
+  max-height: 200px; /* Set this to a value larger than the expected content height */
+}
+
+.wrong{
+    @apply text-sm text-red-500 font-semibold
 }

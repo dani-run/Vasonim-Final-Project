@@ -11,7 +11,7 @@ export const loader= async ({params, request}: LoaderFunctionArgs) => {
         request.headers.get("Cookie")
       );
     const userId= session.get("userId");
-    const user= await db.user.findFirst({
+    const user=userId ? await db.user.findUnique({
         where: {
             id: userId,
         },
@@ -21,7 +21,7 @@ export const loader= async ({params, request}: LoaderFunctionArgs) => {
             likedPosts: true,
             dislikedPosts: true,
         }
-    });
+    }) : null ;
     const post= await db.post.findUnique({
         where: {
             id: params.postId,
@@ -83,13 +83,14 @@ export const action = async ({request, params}: ClientActionFunctionArgs) => {
     case "delete": 
         return deleteCom(commentId);
     case "edit":
+        const currentDate=new Date()
         return await db.comment.update({
             where: {
                 id: commentId,
             },
             data: {
                 content,
-                edited: true,
+                edited: currentDate,
             }
         })
     case "like":

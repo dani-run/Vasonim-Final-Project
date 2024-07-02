@@ -13,16 +13,22 @@
     "css": "tailwindcss -i app/styles/input.css -o app/styles/output.css --watch"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-regular-svg-icons": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@prisma/client": "^5.14.0",
     "@remix-run/node": "^2.9.2",
     "@remix-run/react": "^2.9.2",
     "@remix-run/serve": "^2.9.2",
     "bcryptjs": "^2.4.3",
     "express": "^4.19.2",
+    "fontawesome": "^5.6.3",
     "isbot": "^4.4.0",
     "node-fetch": "^3.3.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-fontawesome": "^1.7.1",
     "source-map-support": "^0.5.21",
     "tailwindcss-important": "^1.0.0",
     "tsx": "^4.11.0"

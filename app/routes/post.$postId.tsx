@@ -3,7 +3,6 @@ import { useLoaderData, useActionData, Link, Form, ClientActionFunctionArgs } fr
 import { Post } from "~/components/post";
 import { Comment } from "~/components/comment";
 import { db } from "~/utils/db.server";
-import { formatPost } from "~/components/functions";
 import { createReply, deleteCom, getSession, fuckedLoader } from "~/utils/session.server"; //trebuie pt userId
 import { useState } from "react";
 import fetch from "node-fetch";
@@ -13,12 +12,13 @@ export const loader= async ({params, request}: LoaderFunctionArgs) => {
         request.headers.get("Cookie")
       );
     const userId=session.get("userId");
-    const user= await db.user.findFirst({
+    const user=userId ? await db.user.findUnique({
         where: {
             id: userId,
         }
-    })
-    const post= await db.post.findFirst({
+    }) : null ;
+    
+    const post= await db.post.findUnique({
         where:{
             id: params.postId,
         },
@@ -28,8 +28,7 @@ export const loader= async ({params, request}: LoaderFunctionArgs) => {
             likes: true,
             dislikes: true,
             comments: {
-                take: 5,
-                include:fuckedLoader(5),
+                include: fuckedLoader(5),
                 orderBy: [
                     {
                     pinned: "desc",
@@ -39,10 +38,10 @@ export const loader= async ({params, request}: LoaderFunctionArgs) => {
             ],
             },
         },
-            })
+            });
     if(!post){
         throw new Response("Post not found", { status: 404 });
-    }
+    } 
     return json({post, user});
 }
 
@@ -62,7 +61,7 @@ export const action = async ({request, params}: ClientActionFunctionArgs) => {
     }
     const commentId=String(form.get("commentId")); // Extract parentId from form data
     const option=String(form.get("option"));
-    const post= await db.post.findFirst({
+    const post= await db.post.findUnique({
         where: {
             id: postId,
         }
@@ -91,7 +90,8 @@ export const action = async ({request, params}: ClientActionFunctionArgs) => {
         return redirect("/");
     case "editPost":
         if(post.section === "informational"){
-            const links=form.getAll("links[]") as string[];
+            const notWorkingLinks=form.getAll("links[]") as string[];
+            const links=notWorkingLinks.map(l => "https://"+l);
             const checks=links.map(async (l)=>{
                 try {
                 const exists= await db.link.findFirst({
@@ -111,7 +111,9 @@ export const action = async ({request, params}: ClientActionFunctionArgs) => {
             });
             const results= await Promise.all(checks);
             const workingLinks=links.filter((_,index) => results[index]);
-            console.log(links, workingLinks);
+            if(!workingLinks.length){
+                return null;
+            }
             const promises=workingLinks.map( async l => db.link.create({
                 data:{
                     content: l,
@@ -126,16 +128,26 @@ export const action = async ({request, params}: ClientActionFunctionArgs) => {
             },
             data:{
                 content,
-                edited: true,
+                edited: new Date(),
             }
         });
+    case "edit":
+        return await db.comment.update({
+            where: {
+                id: commentId,
+            },
+            data: {
+                content,
+                edited: new Date(),
+            }
+        })
     case "deleteLink":
         const linkId=String(form.get("linkId"));
         return await db.link.delete({
             where:{
-                id: linkId
+                id: linkId,
             }
-        })
+        });
     case "like":
         await db.comment.update({
             where: {
@@ -294,7 +306,7 @@ export const action = async ({request, params}: ClientActionFunctionArgs) => {
                 id: commentId,
             },
             data:{
-                pinned: true
+                pinned: true,
             }
         });
         return await db.post.update({
@@ -330,38 +342,43 @@ export const action = async ({request, params}: ClientActionFunctionArgs) => {
 export default function PostRoute(){
     const data=useLoaderData<typeof loader>();
     const actionData=useActionData<typeof action>(); //ma mai gandesc
-    const [com, setCom] =useState("")
-    const format=formatPost(data.post);
-    
+    const [com, setCom] =useState("");
+    const coms=data.post.comments;
+    const handleSubmit = () => {
+        setCom("");
+    }
     return(
-        <div className="singlePost">
-            <Link to="/">Back</Link>
+        <div className="flex h-screen w-screen justify-between ">
+            <div className="mx-2 min-w-240 max-w-272 overflow-x-auto h-screen overflow-auto p-4 " >
+            <Link to="/" className="text-gray-800 hover:text-gray-900" >Back to home page</Link>
             <Post 
             post={data.post}
             user={data.user}
             full={true}
             />
-            <Form method="post" onSubmit={() =>{
-                setCom("");
-            } } >
+            </div>
+            <div className=" right-0 w-2/5 p-4 overflow-x-auto mr-10 ">
+            {coms.length ? <p>{coms.length} comment{coms.length >1 && "s"}</p> : null }
+            
+            <Form method="post" onSubmit={() => handleSubmit()} >
                 <label>
                     Add a comment:
                     <br />
                     <textarea name="content" value={com} onInput={(e)=> setCom(e.currentTarget.value)} />
                 </label>
-                <button type="submit" name="option" value="reply" >Send</button>
+                <button type="submit" name="option" value="reply" className="mt-2 p-2 bg-yellow-500 text-black rounded-lg" >Send</button>
             </Form>
             
-            <div className="comments" >
-                <Link to={"/coms/" + data.post.id} >All comments</Link>
+            <div className="comments mt-4 " >
                 <ul>
-                {data.post.comments.filter((com)=> com.parentId === null ).map((comment) =>(  //recursive loading <3
+                {coms.filter((com)=> com.parentId === null ).map((comment) =>(  //recursive loading <3
                     <li key={comment.id}>
-                        <Comment limit={5} postAuthorId={data.post.postedBy?.id} user={data.user} full={false} comment={comment} />
+                        <Comment limit={5} postAuthorId={data.post.postedBy?.id} user={data.user} full={true} comment={comment} replies={comment.replies} />
                     </li>
                 ))}
                 </ul>
             </div>
+        </div>
         </div>
     )
 }

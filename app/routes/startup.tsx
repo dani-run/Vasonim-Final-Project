@@ -16,8 +16,8 @@ export const loader = async ({request}: ClientLoaderFunctionArgs) => {
 
 export default function Index() {
   return (
-    <div className="justify-center flex items-center h-screen " >
-      <div className="bg-yellow-100 flex-col flex h-128 w-192 rounded-3xl border-2 top-2 !border-black justify-center items-center " >
+    <div className="justify-center flex items-center h-screen bg-gray-100" >
+      <div className="bg-yellow-100 flex-col flex h-128 w-192 rounded-3xl shadow-2xl justify-center items-center " >
             <img src="./logoVasonim.png" alt="Vasonim logo" className="h-64 w-64 " />
             <p className="vasonim " >Vasonim Forum</p>
             <div className="mt-10 mb-10 " >

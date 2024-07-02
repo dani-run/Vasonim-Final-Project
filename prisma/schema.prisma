@@ -46,7 +46,7 @@ model Post {
   likes      User[]    @relation("UserLikedPosts") //seteaza cei care au cont
   dislikes   User[]    @relation("UserDislikedPosts")   //seteaza cei care au cont
   hasPinned  Boolean   @default(false)   //id de la pinnedCom, nu mai pun relations ca ia foc
-  edited     Boolean   @default(false)
+  edited     DateTime  @default(now())
 }
 
 model Comment{
@@ -65,5 +65,5 @@ model Comment{
   replies    Comment[] @relation("CommentToComment") // replies
   likes      User[]    @relation("UserLikedComments") // Users who liked the comment
   dislikes   User[]    @relation("UserDislikedComments") // Users who disliked the comment
-  edited     Boolean   @default(false)
+  edited     DateTime  @default(now())
 }

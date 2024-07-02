@@ -1,6 +1,7 @@
 import { Form,ClientActionFunctionArgs, ClientLoaderFunctionArgs, Link, useActionData } from "@remix-run/react"
 import { json, redirect } from "@remix-run/node";
 import { validateUser, getSession, commitSession, destroySession } from "~/utils/session.server";
+import { useState } from "react";
 
 export const loader = async ({request}: ClientLoaderFunctionArgs) => {
     const session = await getSession(
@@ -9,12 +10,7 @@ export const loader = async ({request}: ClientLoaderFunctionArgs) => {
     if (session.has('userId')){
         return redirect('/');
     }
-    const data= {error: session.get('error')};
-    return json(data, {
-     headers: {
-        "Set-Cookie": await commitSession(session),
-     },
-    });
+    return null;
 }
 
 export const action = async ({request}: ClientActionFunctionArgs) => {
@@ -32,7 +28,6 @@ export const action = async ({request}: ClientActionFunctionArgs) => {
         return json({error});
       }
       session.set('userId',userId);
-    console.log(name, password, ' logged');
     return redirect('/', {
         headers: {
             'Set-Cookie': await commitSession(session),
@@ -42,25 +37,43 @@ export const action = async ({request}: ClientActionFunctionArgs) => {
 
 export default function Login(){
     const actionData=useActionData<typeof action>();
+    const [name, setName]=useState("");
+    const [pass, setPass]=useState("");
     return(
-        <div className="" >
-        <p>Welcome Back!</p>
-            <Form method="post" >
-                <label>
-                    Username or email: 
-                    <input type='text' name="name" />
-                </label>
+        <div className="justify-center flex items-center h-screen bg-gray-100" >
+            
+            <div className=" bg-white shadow-2xl rounded-3xl h-128 w-192 flex flex-col items-center " >
+                <div className="fixed text-center mb-4 mt-10 " >
+                    <p className="font-bold text-2xl mb-2 " >Welcome Back!</p>
+                    <Link to='/signup' className="font-semibold text-lg mb-2 underline text-yellow-500 " >Don't have an account? Create one!</Link>
+                </div>
+         
+            <div className="flex-col flex top-2 justify-center my-auto  items-center  text-center " >
+                <Form method="post" >
+                    <label className="block text-gray-700" >
+                    <input type='text' name="name" placeholder="Username or Email"
+                     className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none " 
+                     onInput={(e) => setName(e.currentTarget.value) } />
+                     </label>
                 <br />
-                <label>
-                    Password: 
-                    <input type="password" name='password' />
-                </label>
+                <label className="block text-gray-700" >
+                    <input type='password' name="password" placeholder="Password"
+                     className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none " 
+                     onInput={(e) => setPass(e.currentTarget.value) } />
+                     </label>
                 <br />
                 {actionData ? <>{actionData.error }<br /></> : null }
-                <button type='submit' >Log in</button>
+                {(name && pass) ? <button type="submit"
+                 className="bg-yellow-500 text-black px-4 py-2 rounded-lg hover:bg-yellow-600 mb-4 " >Log in</button> 
+                 :
+                 <button type="button"
+                 className="bg-gray-400 text-white px-4 py-2 rounded-lg mb-4 hover:bg-gray-400 " disabled>Log in</button> }
             </Form>
-            <br />
-            <Link to='/signup' >Dont't have an account? Create one!</Link>
-        </div >
+            <Link to='/startup' className="font-semibold text-md mt-6 underline text-gray-950">
+            Back to Startup Page
+          </Link>
+            </div>
+            </div>
+        </div>
     )
 }

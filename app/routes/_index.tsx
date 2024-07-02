@@ -10,9 +10,8 @@ import {fuckedLoader, getSession } from "~/utils/session.server";
 import { db } from "~/utils/db.server";
 import { Post } from "~/components/post";
 import { Comment } from "~/components/comment";
-import { formatPost } from "~/components/functions";
-// import "../styles/home.css";
-
+import { faMaximize } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const loader= async ({request} : ClientLoaderFunctionArgs) => {
   const posts= await db.post.findMany({
@@ -26,12 +25,11 @@ export const loader= async ({request} : ClientLoaderFunctionArgs) => {
       } 
     }
   });
-  // console.log(posts); //il probez asa, dar imi umple terminalul
   const session = await getSession(
     request.headers.get('Cookie')
   );
   const userId=session.get("userId");
-  const user= userId ? await db.user.findFirst({
+  const user= userId ? await db.user.findUnique({
     where:{
       id: userId,
     }
@@ -43,39 +41,38 @@ export default function HomeScreen(){
   const data=useLoaderData<typeof loader>();
   return (
     <>
-  <Outlet />
-  <ScrollRestoration />
-  <p className="text-3xl" >Recent posts you might be interested in:</p>
-  <div className="pl-2" >
-    {data.posts.map((post)=>{
-      const comment=post.comments[Math.floor(Math.random() * post.comments?.length)];
-      const postId=post.id;
-      return (<>
-      <div  key={post.id} className="flex items-start space-x-4" >
-              <Post 
-              post={post}
-              user={data.user}
-              full={false}
-              />
-              <div>
-                { comment &&
-                <div className="mt-6" > 
-                  <Link to={`/coms/${post.id}`} >
-                    <Comment id={comment.id} full={false} comment={comment} user={data.user} />
-                  </Link>
-                  
-                </div>}
-              <div className={!comment ? "mt-6" : "" } >
-                <Link to={"post/"+postId} ><button type="button" className="hover:bg-yellow-400 w-24 h-12 rounded-xl " >More details</button></Link>
-              </div>
-              </div>
-              
-            </div>
-            <br />
-            </>)
-    })}
-    
-  </div>
-  </>
+    <ScrollRestoration />
+    <div className="homeScreen" >
+      {data.posts.map((post)=>{
+        const comment=post.comments.find(com => com.pinned === true) || post.comments[0] ;
+        const postId=post.id;
+        return (<div key={post.id} className="flex " >
+          <div  className="flex space-x-6 p-4 bg-white shadow-md rounded-lg w-screen m-6" >
+                  <Post className="m-2 w-3/5 flex flex-col justify-between top-0 left-20 p-4 "
+                  post={post}
+                  user={data.user}
+                  full={false}
+                  />
+                  <div className="w-2/5 flex flex-col justify-start " >
+                    { comment &&
+                    <div className="mt-6 mb-10 " > 
+                      <Link to={`/post/${post.id}`} >
+                        <Comment full={false} comment={comment} user={data.user} replies={null} />
+                      </Link>
+                      
+                    </div>}
+                  <div className={`w-64 ${!comment ? "mt-6" : "" }`} >
+                    <Link to={"/post/"+postId} ><button type="button" className="hover:bg-yellow-400 w-64 h-24 rounded-xl justify-center items-center font-bold text-3xl text-center text-nowrap flex " >
+                      <FontAwesomeIcon icon={faMaximize} className="text-5xl"/>
+                       More Details
+                       </button>
+                    </Link>
+                  </div>
+                  </div>
+                </div>
+                </div>)
+      })}
+    </div>
+    </>
   );
 }
