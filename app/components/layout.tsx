@@ -38,8 +38,6 @@ export function Layout({ location ,user, children }: { location: any ;user: any,
       className={`text-center text-3xl ${location === "/section" ? "text-orange-400 hover:text-orange-500" : `${location.includes("/sections") ? `${location.includes("urgent") ? "text-red-500 hover:text-red-600" : "" } ${location.includes("general") ? "text-green-500 hover:text-green-600" : "" } ${location.includes("informational") ? "text-blue-500 hover:text-blue-600" : "" }` : "" }` }`} >
         <FontAwesomeIcon icon={faList} />
       </Link>
-      {/* <br />
-      <Link to="/search" className={location==='/search' ? 'text-orange-400 hover:text-orange-500 text-center  ' : 'text-center ' } >Search posts</Link> */}
       <br />
       <Link to={user ? '/new' : "/login"} className={`text-center text-3xl ${location ==="/new" ? "text-orange-400 hover:text-orange-500" : "" }`} ><FontAwesomeIcon icon={faPlus} /></Link>
       <br/>
