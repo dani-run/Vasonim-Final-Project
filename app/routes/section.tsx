@@ -23,7 +23,7 @@ export default function Sections(){
             <Link to="/sections/urgent"
             onMouseEnter={() => handleMouseEnter('urgent')}
             onMouseLeave={() => handleMouseLeave()}
-            className="text-red-500 hover:text-red-600 border-2 border-gray-500 bg-gray-100 h-72 w-96 rounded-3xl flex align-middle justify-center items-center text-center text-lg font-bold mb-4 "  >Urgent Cases</Link>
+            className="text-red-500 hover:text-red-600 border-2 border-gray-500 bg-gray-100 hover:bg-gray-200 h-72 w-96 rounded-3xl flex align-middle justify-center items-center text-center text-lg font-bold mb-4 "  >Urgent Cases</Link>
             <div className={`text-center items-center bottom-full mb-2 bg-gray-700 text-white text-sm rounded  ${hoveredLink === 'urgent' ? 'fade-in show' : 'fade-in'}`}>
               <div className="bg-gray-700 text-white text-sm rounded px-2 py-1 mt-2">
               This section includes cases requiring immediate attention.
@@ -35,12 +35,12 @@ export default function Sections(){
             <Link to="/sections/general" 
             onMouseEnter={() => handleMouseEnter('general')}
             onMouseLeave={handleMouseLeave}
-            className="text-green-500 hover:text-green-600 border-2 border-gray-500 bg-gray-100 h-72 w-96 rounded-3xl flex align-middle justify-center items-center text-center text-lg font-bold mb-4  " 
+            className="text-green-500 hover:text-green-600 border-2 border-gray-500 hover:bg-gray-200 bg-gray-100 h-72 w-96 rounded-3xl flex align-middle justify-center items-center text-center text-lg font-bold mb-4  " 
             >
               General Questions
               </Link>
               <div className={`text-center items-center bottom-full mb-2 bg-gray-700 text-white text-sm rounded  ${hoveredLink === 'general' ? 'fade-in show' : 'fade-in'}`}>
-              <div className="bg-gray-700 text-white text-sm rounded px-2 py-1 mt-2">
+              <div className="bg-gray-700 text-white text-sm rounded px-2 py-1 mt-2" >
               This section includes general inquiries.
               </div>
             </div>
@@ -50,7 +50,7 @@ export default function Sections(){
             <Link to="/sections/informational" 
             onMouseEnter={() => handleMouseEnter('informational')}
             onMouseLeave={handleMouseLeave}
-            className="text-blue-500 hover:text-blue-600 border-2 border-gray-500 bg-gray-100 h-72 w-96 rounded-3xl flex align-middle justify-center items-center text-center text-lg font-bold mb-4 " >Informational Resources</Link>
+            className="text-blue-500 hover:text-blue-600 border-2 border-gray-500 bg-gray-100 hover:bg-gray-200 h-72 w-96 rounded-3xl flex align-middle justify-center items-center text-center text-lg font-bold mb-4 " >Informational Resources</Link>
           <div className={`text-center items-center bottom-full mb-2 bg-gray-700 text-white text-sm rounded  ${hoveredLink === 'informational' ? 'fade-in show' : 'fade-in'}`}>
               <div className="bg-gray-700 text-white text-sm rounded px-2 py-1 mt-2">
               This section includes key user-shared resources.

@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs, json, redirect } from "@remix-run/node";
-import { useLoaderData, useActionData, Link, Form, ClientActionFunctionArgs } from "@remix-run/react";
+import { useLoaderData, useActionData, Link, Form, ClientActionFunctionArgs, NavLink } from "@remix-run/react";
 import { Post } from "~/components/post";
 import { Comment } from "~/components/comment";
 import { db } from "~/utils/db.server";
@@ -344,12 +344,13 @@ export default function PostRoute(){
     const actionData=useActionData<typeof action>(); //ma mai gandesc
     const [com, setCom] =useState("");
     const coms=data.post.comments;
+    const pinnedCom=coms.find((com : any ) => com.pinned);
     const handleSubmit = () => {
         setCom("");
     }
     return(
         <div className="flex h-screen w-screen justify-between ">
-            <div className="mx-2 min-w-240 max-w-272 overflow-x-auto h-screen overflow-auto p-4 " >
+            <div className="mx-2 min-w-240 max-w-272 h-screen overflow-x-hidden p-4 " >
             <Link to="/" className="text-gray-800 hover:text-gray-900" >Back to home page</Link>
             <Post 
             post={data.post}
@@ -357,7 +358,7 @@ export default function PostRoute(){
             full={true}
             />
             </div>
-            <div className=" right-0 w-2/5 p-4 overflow-x-auto mr-10 ">
+            <div className="right-0 w-2/5 p-4 overflow-x-hidden mr-10 ">
             {coms.length ? <p>{coms.length} comment{coms.length >1 && "s"}</p> : null }
             
             <Form method="post" onSubmit={() => handleSubmit()} >
@@ -366,13 +367,15 @@ export default function PostRoute(){
                     <br />
                     <textarea name="content" value={com} onInput={(e)=> setCom(e.currentTarget.value)} />
                 </label>
-                <button type="submit" name="option" value="reply" className="mt-2 p-2 bg-yellow-500 text-black rounded-lg" >Send</button>
+                <button type="submit" name="option" value="reply" className="mt-2 p-2 bg-yellow-500 hover:bg-yellow-600 text-black rounded-lg" >Send</button>
             </Form>
-            
+            { (pinnedCom?.parentId !== null && pinnedCom ) && <div className="comments mt-4 " >
+                <Comment limit={0} postAuthorId={data.post.postedBy?.id} user={data.user} full={true} comment={pinnedCom} replies={null} />
+            </div>}       
             <div className="comments mt-4 " >
                 <ul>
-                {coms.filter((com)=> com.parentId === null ).map((comment) =>(  //recursive loading <3
-                    <li key={comment.id}>
+                {coms.filter((com : any )=> com.parentId === null  ).map((comment : any ) =>(  //recursive loading <3
+                    <li key={comment.id} id={comment.id} >
                         <Comment limit={5} postAuthorId={data.post.postedBy?.id} user={data.user} full={true} comment={comment} replies={comment.replies} />
                     </li>
                 ))}
