@@ -1,6 +1,23 @@
-# Welcome to Remix + Vite!
+# This is the final project for Daniel Mîinea
 
-📖 See the [Remix docs](https://remix.run/docs) and the [Remix Vite docs](https://remix.run/docs/en/main/guides/vite) for details on supported features.
+# Setup
+Install the dependencies:
+
+```shellscript
+npm install
+```
+
+Then create the database:
+
+```shellscript
+npx prisma db push
+```
+
+After this, generate the client(its a shortcut for changing into prisma and then running it)
+
+```shellscript
+npm run seed
+```
 
 ## Development
 
@@ -24,13 +41,3 @@ Then run the app in production mode:
 npm start
 ```
 
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-- `build/server`
-- `build/client`
