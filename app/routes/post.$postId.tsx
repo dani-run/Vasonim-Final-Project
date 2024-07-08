@@ -51,7 +51,7 @@ export const action = async ({request, params}: ClientActionFunctionArgs) => {
       );
     const userId=session.get("userId");
     if(!userId){
-        return redirect("/login");
+        return redirect("/startup");
     }
     const form=await request.formData();
     const content=String(form.get("content"));

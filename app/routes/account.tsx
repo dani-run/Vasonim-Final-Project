@@ -46,7 +46,7 @@ export const action = async ({request} : ClientActionFunctionArgs) => {
     }
     switch(option){
         case "logout" :
-            return redirect("/login", {
+            return redirect("/startup", {
       headers: {
         "Set-Cookie": await destroySession(session),
       },
@@ -151,7 +151,7 @@ export const action = async ({request} : ClientActionFunctionArgs) => {
             id:userId
           }
         });
-        return redirect("/login", {
+        return redirect("/startup", {
           headers: {
             "Set-Cookie": await destroySession(session),
           },
@@ -311,14 +311,14 @@ export default function Account(){
                 }} >
           {!showMail ? "Show Email" : "Cancel" }
           </button>
-            {showMail && <div className="mt-2" >
-                <input type="password" name="password" className="w-full py-2 px-3 border rounded focus:outline-none  focus:ring-yellow-500 focus:border-transparent"
+            {showMail && <div className="mt-2 flex flex-col items-center " >
+                <input type="password" name="password" className="w-40 py-2 px-3 border rounded focus:outline-none  focus:ring-yellow-500 focus:border-transparent"
                 placeholder="Enter password "
                 value={password} 
                 onInput={(e) => setPassword(e.currentTarget.value) } />
-              {actionData?.email && <p className="mt-2 text-gray-800 font-semibold " >{actionData?.email}</p>} 
-              {actionData?.error && <p className="mt-2 text-gray-800 font-semibold " >{actionData?.error}</p>}   
-              <button type="submit" name="option" value="showEmail" className=" py-2 px-4 bg-yellow-500 text-white rounded hover:bg-yellow-500 focus:outline-none  focus:ring-yellow-600 focus:ring-opacity-50" >Verify</button>
+              {actionData?.email && <p className="my-3 text-gray-800 font-semibold " >{actionData?.email}</p>} 
+              {actionData?.error && <p className="my-3 text-gray-800 font-semibold " >{actionData?.error}</p>}   
+              <button type="submit" name="option" value="showEmail" className=" py-2 px-4 bg-yellow-500 text-white rounded hover:bg-yellow-500 focus:outline-none w-20 focus:ring-yellow-600 focus:ring-opacity-50" >Verify</button>
               </div>}
         </div>
 

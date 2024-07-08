@@ -8,7 +8,7 @@ export const loader= async ({request}: ClientLoaderFunctionArgs ) => {
         request.headers.get("Cookie")
     );
     if(!session.has("userId")){
-        return redirect('/login');
+        return redirect('/startup');
     }
     return null;
 }
@@ -19,7 +19,7 @@ export const action = async ({request}: ClientActionFunctionArgs ) => {
       );
     const userId=session.get("userId");
     if(!userId){
-        return redirect('/login');
+        return redirect('/startup');
     }
     const form=await request.formData();
     const title=String(form.get("title"));

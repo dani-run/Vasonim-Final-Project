@@ -1,5 +1,5 @@
-import { Form } from "@remix-run/react"
-import { useEffect, useRef, useState } from "react"
+import { Form, Link } from "@remix-run/react"
+import { useState } from "react"
 import { formatPost } from "./functions";
 import { faThumbsDown, faThumbsUp } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -38,8 +38,11 @@ const canEdit= user?.id===post.postedBy?.id || false;
                 </div>
                 <div className="" >
                 {(full && canEdit ) && <div className="m-4 text-right " >
-                    <div className="mt-4 inline-block" >
-                        <button onClick={()=>{
+                    
+                    <Form method="post" className="inline-block m-2" >
+                        <div>
+                    
+                        <button type="button" onClick={()=>{
             setEdit(!edit);
             setPostContent(content);
             setDelPost(false);
@@ -49,12 +52,12 @@ const canEdit= user?.id===post.postedBy?.id || false;
          >
                 
             {!edit ? "Edit Post " : "Cancel" }
-        </button></div>
-                    <Form method="post" className="inline-block" >
-                    <button type="button" name="option" onClick={() => setDelPost(!delPost)}
+        </button>
+        <button type="button" name="option" onClick={() => setDelPost(!delPost)}
                     className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg" >
                         {!delPost ? "Delete Post": "Cancel" }
                         </button>
+        </div>
                     {delPost && <><p className="mt-2 " >Are you sure you want to delete this post?</p><button 
                     className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg mt-2" 
                     type="submit" name="option" value="deletePost"> 
@@ -64,7 +67,7 @@ const canEdit= user?.id===post.postedBy?.id || false;
                 </div>}
                 </div>
                 </div>
-                {(post.section === "informational" && post.links?.length ) && 
+                {(post.section === "informational" && post.links?.length>0 ) && 
                 <div className="mt-4" > 
                 <p className="font-semibold" >Links:</p>
                 <ul className="list-disc overflow-y-auto ml-4" >
@@ -75,7 +78,9 @@ const canEdit= user?.id===post.postedBy?.id || false;
                 </ul>
                 </div>}
                 
-               <div className="mt-10 text-lg " >{content}</div>
+    <div className={`my-10 mx-3 break-all ${full ? '' : 'line-clamp-5' }`}>
+            {content}
+    </div>
                 
             {edit && 
             <Form method="post" onSubmit={() => {
@@ -143,8 +148,23 @@ const canEdit= user?.id===post.postedBy?.id || false;
                     <p className="text-lg mx-12 ">Dislikes: {dislikes.length}</p>
                     </div>
                 </Form> : <div>
-                <p className="text-lg mx-4 ">Likes: {likes.length}</p>
-                <p className="text-lg mx-4 ">Dislikes: {dislikes.length}</p>
+                    <Link to={`post/${post.id}`} className="flex justify-between " >
+                    <div className="" >
+                    { !(likes.some((like :any ) => like.id===user?.id )) ? 
+                    <button type="button" value="likePost" name="option" className="like text-5xl px-4 py-2 rounded-lg mr-2  " ><FontAwesomeIcon icon={faThumbsUp} /></button> 
+                    :
+                    <button type="button" value="unlikePost" name="option" className="liked text-5xl px-4 py-2 rounded-lg mr-2  " ><FontAwesomeIcon icon={faThumbsUp} /></button>}
+                    <p className="text-lg mx-12 ">Likes: {likes.length}</p>
+                    </div>
+
+                    <div className="" >
+                    { !(dislikes.some((dislike :any ) => dislike.id===user?.id )) ? 
+                    <button type="button" value="dislikePost" name="option" className="dislike text-5xl px-4 py-2 rounded-lg mr-2  " ><FontAwesomeIcon icon={faThumbsDown} /></button> 
+                    :
+                    <button type="button" value="undislikePost" name="option" className="disliked text-5xl px-4 py-2 rounded-lg mr-2  " ><FontAwesomeIcon icon={faThumbsDown} /></button>}
+                    <p className="text-lg mx-12 ">Dislikes: {dislikes.length}</p>
+                    </div>
+                    </Link>
                 </div> }   
             </div> 
             </div>

@@ -1,5 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-const important = require('tailwindcss-important');
 export default {
   content: [
     "./app/**/*.tsx",
@@ -64,7 +63,7 @@ export default {
     },
   },
   plugins: [
-    important(),
-  ],
+    require('tailwindcss-important'),
+    ],
 }
 

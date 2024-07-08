@@ -2,19 +2,19 @@ import { Form, Link } from "@remix-run/react";
 import { formatPost } from "./functions";
 import { useState } from "react";
 import { faThumbTack } from "@fortawesome/free-solid-svg-icons";
-import {faThumbsDown, faThumbsUp } from "@fortawesome/free-regular-svg-icons";
+import {faThumbsDown, faThumbsUp, faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
 
 
 export function Comment({comment, user, full, limit, postAuthorId, replies}: any){
     const userId=user?.id || null ;
     const canDelete=(userId === comment.postedBy?.id || userId === postAuthorId);
-    const canEdit= userId===comment.postedBy?.id;
+    const canEdit= userId===comment.postedBy?.id && !comment.pinned ;
     const content=comment.content;
     const [com, setCom]=useState('');
     const [edit, setEdit]=useState(false);
     const [reply, setReply]=useState(false);
-    const [pinned, setPinned]=useState(false);
     const [delCom, setDelCom]=useState(false);
     const [open, setOpen]=useState(false);
     const handleSubmit = () => {
@@ -28,11 +28,47 @@ export function Comment({comment, user, full, limit, postAuthorId, replies}: any
     <div className={`relative w-screen ${comment.pinned ? "bg-gray-100" : "bg-white"} rounded-lg p-4 border-b border-gray-200 ${comment.pinned ? "pl-12" : ""}`} >
         {(full && canDelete) && <Form method="post" className="mt-2 " onSubmit={handleSubmit} >
             <input type="hidden" name="commentId" value={comment.id} />
-            { ((userId===postAuthorId) &&((comment.pinned || !(comment.onPost.hasPinned) ))) && <button className={`text-3xl ${!comment.pinned ? "pin" : "pinned" }`} type="submit" name="option" onClick={() => setPinned(!comment.pinned) } value={!comment.pinned ? "pin" : "unpin"} ><FontAwesomeIcon icon={faThumbTack} /></button>}
-            <button type="button" name="option" onClick={() => setDelCom(!delCom) } 
-            className="text-sm text-gray-500 "
-                >{!delCom ? "Delete comment": "Cancel" }</button>
-                    {delCom && <><p>Are you sure you want to delete this comment?</p><button type="submit" name="option" value="delete" className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg mt-2  " >Delete comment</button></>}
+            { ((userId===postAuthorId) &&((comment.pinned || !(comment.onPost.hasPinned) ))) && 
+            <button 
+            className={`text-3xl  ${!comment.pinned ? "pin" : "pinned" }`} 
+            type="submit"
+            name="option" 
+            onClick={() => {
+                setDelCom(false);
+                setEdit(false);
+                setReply(false);
+                }} 
+                value={!comment.pinned ? "pin" : "unpin"} >
+                <FontAwesomeIcon icon={faThumbTack} />
+            </button>}
+            <div className="inline-block m-2 " >
+            <button type="button" name="option" onClick={() => {
+                setDelCom(!delCom);
+                setEdit(false);
+                setReply(false);
+            }} 
+            className={`text-sm !bg-inherit !border-0 ${delCom ? 'text-red-500 hover:text-red-600' : 'text-gray-500 hover:text-gray-600 ' }`}
+                ><FontAwesomeIcon icon={faTrash} size="lg" /></button>
+        {(full && canEdit) && (<button type="button" onClick={()=>{
+        setCom(content);
+        setEdit(!edit);
+        setReply(false);
+        setDelCom(false);
+    }}
+    className={`text-sm mx-2 !border-0 !bg-inherit focus:outline-none ${edit ? '' : 'text-gray-500'} `} >
+        <FontAwesomeIcon icon={faPenToSquare} size="lg" />
+    </button>)}
+        </div>
+                    {delCom && <>
+                    <p className="wrong" >Are you sure you want to delete this comment?</p>
+                    <button 
+                    type="submit" 
+                    name="option" 
+                    value="delete" 
+                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg mt-2 text-xs " >
+                        Delete comment
+                    </button>
+                    </>}
         </Form>
         }
         <div>
@@ -48,7 +84,7 @@ export function Comment({comment, user, full, limit, postAuthorId, replies}: any
             { (format.edited !== format.realDate ) && <div className="italic font-medium mb-1" >
                 Edited on {format.edited}
             </div>}
-           <p className={`py-2 max-w-xl ${comment.pinned ? "bg-yellow-200 rounded-md px-4  " : ""}`}>{content}</p> 
+           <p className={`py-2 max-w-xl break-all ${comment.pinned ? "bg-yellow-200 rounded-md px-4  " : ""}`}>{content}</p> 
            <div className="flex items-center text-sm text-gray-600" >
             Likes: {comment.likes.length}{" "}
             Dislikes: {comment.dislikes.length}
@@ -76,14 +112,7 @@ export function Comment({comment, user, full, limit, postAuthorId, replies}: any
     )}
         
         
-        {(full && canEdit) && (<button onClick={()=>{
-            setCom(content);
-            setEdit(!edit);
-            setReply(false);
-        }}
-        className="text-sm text-gray-500 " >
-            {!edit ? "Edit" : "Cancel" }
-        </button>)}
+        
         <div className="reactions">
                 <Form method="post" onSubmit={handleSubmit} >
                     <input type="hidden" name="commentId" value={comment.id} />
@@ -104,6 +133,7 @@ export function Comment({comment, user, full, limit, postAuthorId, replies}: any
             setCom("");
             setReply(!reply);
             setEdit(false);
+            setDelCom(false);
             }}
             className="text-sm text-gray-500 focus:outline-none" >
             {!reply ? "Reply" : "Cancel" }

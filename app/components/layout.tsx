@@ -39,7 +39,7 @@ export function Layout({ location ,user, children }: { location: any ;user: any,
         <FontAwesomeIcon icon={faList} />
       </Link>
       <br />
-      <Link to={user ? '/new' : "/login"} className={`text-center text-3xl ${location ==="/new" ? "text-orange-400 hover:text-orange-500" : "" }`} ><FontAwesomeIcon icon={faPlus} /></Link>
+      <Link to={user ? '/new' : "/startup"} className={`text-center text-3xl ${location ==="/new" ? "text-orange-400 hover:text-orange-500" : "" }`} ><FontAwesomeIcon icon={faPlus} /></Link>
       <br/>
       </div>
       </div>
